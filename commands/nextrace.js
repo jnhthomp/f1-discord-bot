@@ -1,4 +1,5 @@
-const { SlashCommandBuilder } = require('@discordjs/builders')
+const { SlashCommandBuilder } = require('@discordjs/builders');
+const { MessageEmbed } = require('discord.js');
 const fetch = require('node-fetch');
 
 module.exports = {
@@ -31,7 +32,17 @@ module.exports = {
       }
 
       console.log(`Next race data: ${raceData}`)
-      
-      interaction.editReply(`${raceData.raceName} on ${raceData.date}`)
+
+      const embed = new MessageEmbed()
+        .setColor('#e10600')
+        .setTitle(raceData.raceName)
+        .setURL(raceData.url)
+        .addFields(
+          { name: 'Round', value: raceData.round },
+          { name: 'Date', value: raceData.date },
+          { name: 'Time', value: raceData.time },
+        )
+
+      interaction.editReply({ embeds: [embed] })
     }
 }
