@@ -9,7 +9,7 @@ module.exports = {
 
     async execute(interaction){
       await interaction.deferReply();
-      const raceData = await fetch(`https://ergast.com/api/f1/2022.json`)
+      const raceData = await fetch(`https://ergast.com/api/f1/current.json`)
         .then(response => response.json())
         .then(data => {
           // reduce json object to array of races
@@ -31,7 +31,7 @@ module.exports = {
         interaction.editReply('No results found')
       }
 
-      console.log(`Next race data: ${raceData}`)
+      // console.log(`Next race data: ${raceData}`)
 
       const embed = new MessageEmbed()
         .setColor('#e10600')
