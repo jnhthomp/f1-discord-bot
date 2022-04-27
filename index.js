@@ -1,10 +1,24 @@
-const fetch = require('node-fetch');
+// Node file system module
+const fs = require('node:fs');
 // Require the necessary discord.js classes
-const { Client, Intents } = require('discord.js');
+const { Client, Collection, Intents } = require('discord.js');
 const { token } = require('./config.json');
 
 // Create a new client instance
 const client = new Client({ intents: [Intents.FLAGS.GUILDS] });
+
+// Create a collection of commands
+client.commands = new Collection();
+// Create an array of js files in the commands folder
+const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'))
+
+// Loop through array of js files in commands folder
+for (const file of commandFiles) {
+  // save the exported value fromt he file
+  const command = require(`./commands/${file}`);
+  // set a command using the name and command object from the js file
+  client.commands.set(command.data.name, command)
+}
 
 // When the client is ready, run this code (only once)
 client.once('ready', () => {
@@ -12,45 +26,24 @@ client.once('ready', () => {
 });
 
 client.on('interactionCreate', async interaction => {
+  // Check that the interaction is a command
   if (!interaction.isCommand()) return;
 
-  const { commandName } = interaction;
+  // Get the appropriate command file from the object we created by setting each command
+  const command = client.commands.get(interaction.commandName);
 
-  if (commandName === 'ping') {
-    await interaction.reply('Pong!');
-  } else if (commandName === 'server') {
-    await interaction.reply(`Server info: ${interaction.guild.name}\nTotal members: ${interaction.guild.memberCount}`);
-  } else if (commandName === 'user') {
-    await interaction.reply(`Your tag: ${interaction.user.tag}\nYour id: ${interaction.user.id}`);
-  } else if (commandName === 'nextrace') {
-    await interaction.deferReply();
-    const raceData = await fetch(`https://ergast.com/api/f1/2022.json`)
-      .then(response => response.json())
-      .then(data => {
-        // reduce json object to array of races
-        const raceList = data.MRData.RaceTable.Races
-        // create date object for current date
-        let today = new Date
-        let todayISO = today.toISOString().slice(0, 10)
-        // find next race and return race object
-        let nextRace = () => { 
-          return raceList.filter(el => el.date > todayISO)[0]
-        }
-        // create date with race object data
+  // Cancel if it doesn't exist
+  if(!command) return;
 
-
-        return nextRace()
-      });
-  
-    if(!raceData){
-      interaction.editReply('No results found')
-    }
-
-    console.log(raceData)
-    interaction.editReply(`${raceData.raceName} on ${raceData.date}`) 
+  try {
+    // Execute the action for that command passing the interaction object as an argument
+    await command.execute(interaction);
+  } catch(error){
+    // incase of errors
+    console.error(error);
+    await interaction.reply({content: 'There wa an error while executing this command!', ephemeral: true})
   }
 })
-
 
 // Login to Discord with your client's token
 client.login(token);
