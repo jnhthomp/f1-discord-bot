@@ -14,7 +14,7 @@ module.exports = {
       .then(response => response.json())
       .then(data => {
         let standingsList = data.MRData.StandingsTable.StandingsLists[0].ConstructorStandings
-        console.log(standingsList)
+        // console.log(standingsList)
 
         let standingFields = standingsList.map((position) => {
           return { name: `${position.position}`, value: `${position.points} - ${position.Constructor.name}` }
