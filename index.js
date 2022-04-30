@@ -3,6 +3,7 @@ const fs = require('node:fs');
 // Require the necessary discord.js classes
 const { Client, Collection, Intents } = require('discord.js');
 const { token } = require('./config.json');
+const { logCommand } = require('./tools/log-command.js')
 
 // Create a new client instance
 const client = new Client({ intents: [Intents.FLAGS.GUILDS] });
@@ -36,6 +37,7 @@ client.on('interactionCreate', async interaction => {
   if(!command) return;
 
   try {
+    logCommand(interaction)
     // Execute the action for that command passing the interaction object as an argument
     await command.execute(interaction);
   } catch(error){
