@@ -8,7 +8,7 @@ module.exports = {
     .setName('qualitimes')
     .setDescription('Get quali stats for a given track')
     // Will expect a trackname as an argument after the command
-    .addStringOption(option => option.setName('trackname').setDescription('Enter a track name')),
+    .addStringOption(option => option.setName('trackname').setDescription('Enter a track name').setRequired(true)),
 
   // Function to take place on command execution
   async execute(interaction) {
