@@ -1,2 +1,5 @@
 node_modules
 config.json
+# Boilerplate file to copy/paste when creating new commands
+# Doesn't actually do anything so shouldn't be included in repo
+tools/boilerplate.js
