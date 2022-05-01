@@ -6,7 +6,7 @@ module.exports = {
   data: new SlashCommandBuilder()
     .setName('driverstats')
     .setDescription('Get per race driver stats')
-    .addStringOption(option => option.setName('drivername').setDescription('Enter a driver name')),
+    .addStringOption(option => option.setName('drivername').setDescription('Enter a driver name').setRequired(true)),
 
   async execute(interaction) {
     await interaction.deferReply();
@@ -26,7 +26,6 @@ module.exports = {
         .then(response => response.json())
         .then(data => {
           let listOfDriverObjs = data.MRData.DriverTable.Drivers
-          console.log(listOfDriverObjs)
           return listOfDriverObjs.map((driver) => `${driver.driverId}`)
         })
       
@@ -34,7 +33,6 @@ module.exports = {
       
     } else {
 
-      // // console.log(`Next race data: ${raceData}`)
       let statsFields = statsData.map((race, i) => {
         
         return {
