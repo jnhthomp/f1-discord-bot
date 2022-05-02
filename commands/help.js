@@ -19,6 +19,7 @@ module.exports = {
       // Special case for commands with options (probably a better way to handle this)
       if(details.name === 'driverstats') {details.name = 'driverstats <DRIVER_ID>'}
       if (details.name === 'qualitimes') { details.name = 'qualitimes <TRACK_ID>' }
+      if (details.name === 'results') { details.name = 'results <YEAR> <ROUND>' }
       
       // Return command object to be used for description
       return {name: `/${details.name}`, description:`${details.description}`}
