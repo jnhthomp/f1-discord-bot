@@ -1,3 +1,25 @@
+# F1 Discord Bot
+This is a Discord bot created using `Discord.js`
+You can install the bot to a server or local machine and provide a config.json file with the appropriate information to run your own instance of the bot in discord servers you own/admin
+Many commands are run by utilizing the [Ergast F1 api](http://ergast.com/mrd/)
+
+# Available Commands
+- `/constructorstandings`
+  - Get current scores in the constructors championship
+- `/driverstandings`
+  - Get current scores in drivers championship
+- `/driverstats <DRIVER_ID>`
+  - Get per race driver stats
+- `/help`
+  - List commands available to F1Bot
+- `/nextrace`
+  - Get next F1 race event info
+- `/qualitimes <TRACK_ID>`
+  - Get quali stats for a given track
+- `/results <YEAR> <ROUND>`
+  - Include year and round number to get results for that race
+  - Exclude to get latest race results
+
 # How to install/use
 1. Create a discord bot application and receive a token following the instructions at the following website
   - https://www.writebots.com/how-to-make-a-discord-bot/
@@ -51,6 +73,7 @@ When bot is running `index.js` will perform a similar but different action to st
   - Attach the generated jpeg to embed object
 
 # Resources: 
+- http://ergast.com/mrd/
 - https://www.writebots.com/how-to-make-a-discord-bot/
 - https://discordjs.guide/additional-info/async-await.html#how-do-promises-work
 - https://discordjs.guide/additional-info/rest-api.html#using-node-fetch
