@@ -92,6 +92,10 @@ I can make even nicer returns by considering using the following technique for b
 
 ## Other Examples:
 Take a look at other examples from my <a href="https://jtdev.netlify.app/">portfolio</a> using the lessons learned from these classes:
+
+
 **Blog Site W/ Categories and Authentification:** https://github.com/jnhthomp/alpha-blog2
+
 **Stock Based Social Network:** https://github.com/jnhthomp/finance-tracker
+
 **Restaurant Web-Based Ordering System:** https://github.com/jnhthomp/practice-food-order-app
