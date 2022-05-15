@@ -83,6 +83,11 @@ I can make even nicer returns by considering using the following technique for b
   - Create html/css markup for webpage, use node-html-to-image to make it a jpeg image
   - Attach the generated jpeg to embed object
 
+## Lessons Learned
+- Creating Node applications
+- Using discord.js
+- Asyncronous JavaScript and API calls
+
 ## Resources: 
 - http://ergast.com/mrd/
 - https://www.writebots.com/how-to-make-a-discord-bot/
