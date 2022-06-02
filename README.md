@@ -39,16 +39,14 @@ Most commands utilize the [Ergast F1 api](http://ergast.com/mrd/) to fetch data 
   - Bot id is also listed in the discord dev panel used to add bot to discord channel
 3. Clone project locally
 4. Run `npm install` on project
-5. Create `config.json` file and add key:value pairs for `clientId`, `guildId`, and `token`
-  -   ```json
-      {
-        "clientId": "botid",
-        "guildId": "serverid",
-        "token": "bottokenhere"
-      }
+5. Create '.env' file and add 'key=value' pairs for 'CLIENT_ID', 'GUILD_ID', and 'TOKEN'
+  -   ```env
+      CLIENT_ID=botid
+      GUILD_ID=serverid
+      TOKEN=botToken.Here
       ```
 6. Deploy commands to the bot by running `node deploy-commands.js`
-7. Run application with `node .` while in project folder
+7. Run application with `node .` or `node index.js` while in project folder
 
 ### Create new commands
 1. Create a file matching what you want the name of the command to be
@@ -87,6 +85,7 @@ I can make even nicer returns by considering using the following technique for b
 - Creating Node applications
 - Using discord.js
 - Asyncronous JavaScript and API calls
+- Hosting bots on heroku for 100% uptime
 
 ## Resources: 
 - http://ergast.com/mrd/
