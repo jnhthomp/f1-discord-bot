@@ -1,8 +1,10 @@
+//Load .env file
+require('dotenv').config()
 // Node file system module
 const fs = require('node:fs');
 // Require the necessary discord.js classes
 const { Client, Collection, Intents } = require('discord.js');
-const { token } = require('./config.json');
+// const { token } = require('./config.json');
 const { logCommand } = require('./tools/log-command.js')
 
 // Create a new client instance
@@ -48,4 +50,4 @@ client.on('interactionCreate', async interaction => {
 })
 
 // Login to Discord with your client's token
-client.login(token);
+client.login(process.env.TOKEN);
