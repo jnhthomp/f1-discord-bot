@@ -5,6 +5,7 @@ const fs = require('node:fs');
 // Require the necessary discord.js classes
 const { Client, Collection, Intents } = require('discord.js');
 // const { token } = require('./config.json');
+require('dotenv').config();
 const { logCommand } = require('./tools/log-command.js')
 
 // Create a new client instance
