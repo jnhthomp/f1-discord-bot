@@ -74,6 +74,17 @@ If you need any npm packages such as fetch import them using require within thes
 When `node deploy-commands.js` is run commands will be retrieved and stored in an array and submitted to the application
 When bot is running `index.js` will perform a similar but different action to store the commands and execute the command in each file as needed
 
+### Trouble Shooting + Tips
+If the app won't start properly in heroku make sure that the dynos are set correctly and the worker dyno is turned  on
+You can set this through the console (after logging in) with:
+```bash
+$heroku ps:scale worker=1
+```
+
+Alternatively in order to turn the heroku bot off while developing and testing locally you can use a value of 0 to shut down the bot until you reset the value to 1
+```bash
+$heroku ps:scale worker=0
+```
 
 ## Optimizations
 I can make even nicer returns by considering using the following technique for better discord attachments this would allow me to design a small webpage for each bot response and fill it with api data as it is fetched. Then an npm package will process the generated html as an image to be attached as the bots response. This will allow very nice and custom output from the bot
