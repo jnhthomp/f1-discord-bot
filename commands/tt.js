@@ -12,8 +12,8 @@ module.exports = {
     .setDescription('See times from the time trial database')
     // Accept options (arguments) after slash command
     // For different typing available if expecting a certain value type (string, int, bool, etc... See: https://discordjs.guide/interactions/slash-commands.html#option-types)
-    .addStringOption(option => option.setName('game').setDescription('Game to retrieve').setRequired(true))
-    .addStringOption(option => option.setName('track').setDescription('Track to retrieve').setRequired(true)),
+    .addStringOption(option => option.setName('game').setDescription('Game to retrieve').setRequired(false))
+    .addStringOption(option => option.setName('track').setDescription('Track to retrieve').setRequired(false)),
 
   // Function to take place on command execution
   async execute(interaction) {
@@ -23,10 +23,25 @@ module.exports = {
     // retrieve option input value if needed
     // const option = interaction.options.getString(optionName);
 
-    // url to use for fetch requests
-    const userInputGame = interaction.options.getString('game') || 'f1_21' // set to option value when added
-    const userInputTrack = interaction.options.getString('track') || 'bahrain' // set to option value when added
-    const url = `https://jtdev-time-trial-api.herokuapp.com/api/${userInputGame}/${userInputTrack}`
+    // create url to use for fetch requests
+    // If no game is entered use null val
+    const userInputGame = interaction.options.getString('game') || null // set to option value when added
+    // If a game is submitted (!null) then the user input string is valid or can be set to null. Otherwise must be null
+    const userInputTrack = userInputGame !== null ? interaction.options.getString('track') || null : null// set to option value when added
+    
+    // Build a fetch path based on whether a game/track was entered
+    let fetchPath = ''
+    if(userInputGame !== null){
+      // If game was entered add game to path
+      fetchPath += `${userInputGame}/`
+    }
+    if(userInputTrack !== null){
+      // If track was entered add track to path 
+      // Note this will be null if no game was entered
+      fetchPath += `${userInputTrack}`
+    }
+    
+    const url = `https://jtdev-time-trial-api.herokuapp.com/api/${fetchPath}`
     // If making fetch requests use this pattern
     const fetchedData = await fetch(url)
       .then(response => response.json())
@@ -47,32 +62,58 @@ module.exports = {
       // (likely bad round number)
       interaction.editReply('Something went wrong...')
     } else { // Handle successful data fetch
+      if (userInputGame !== null && userInputTrack !== null) { // Handle game and track entered
+        console.log('Data fetched successfully')
+        // set podium field for embed
+        // Creates medal + info for top 3 drivers      
+        const embedFieldsPodium = fetchedData.leaderboard.map((data, idx) => { 
+          let medal = null
+          if(idx === 0){ medal = '🥇' }
+          if(idx === 1){ medal = '🥈' }
+          if(idx === 2){ medal = '🥉' }
 
-      console.log('Data fetched successfully')
-      // set podium field for embed
-      // Creates medal + info for top 3 drivers      
-      const embedFieldsPodium = fetchedData.leaderboard.map((data, idx) => { 
-        let medal = null
-        if(idx === 0){ medal = '🥇' }
-        if(idx === 1){ medal = '🥈' }
-        if(idx === 2){ medal = '🥉' }
+          return {...data, medal}
+        }).filter((el, i) => el.time !== 'NaN' && i <= 9) // Ensure times are valid and only display top 10 times 
 
-        return {...data, medal}
-      }).filter((el, i) => el.time !== 'NaN' && i <= 9) // Ensure times are valid and only display top 10 times 
+        console.log(embedFieldsPodium)
+        // Create string of results
+        const embedFieldsStr = embedFieldsPodium.reduce((acc, res, i) => `${acc}\n${res.medal ? res.medal : i + 1}: ${res.time} ${res.driverInitial} ${res.car}`, '')
+        console.log(embedFieldsStr)
 
-      console.log(embedFieldsPodium)
-      // Create string of results
-      const embedFieldsStr = embedFieldsPodium.reduce((acc, res, i) => `${acc}\n${res.medal ? res.medal : i + 1}: ${res.time} ${res.driverInitial} ${res.car}`, '')
-      console.log(embedFieldsStr)
+        const embedField = {name: `Leaderboard`, value: embedFieldsStr}
+        const embed = new MessageEmbed()
+          .setColor('#418e86')
+          .setTitle(`${fetchedData.game} ${fetchedData.track}`)
+          .setURL(url)
+          .addFields(embedField)
 
-      const embedField = {name: `Leaderboard`, value: embedFieldsStr}
-      const embed = new MessageEmbed()
-        .setColor('#418e86')
-        .setTitle(`${fetchedData.game} ${fetchedData.track}`)
-        .setURL(url)
-        .addFields(embedField)
+        interaction.editReply({embeds: [embed]})
+      } else if(userInputGame !== null && userInputTrack === null){ // Handle game only entered (no track specified - list tracks)
+        let tracknames = fetchedData.map(el=> el.name).join('\n')
+        console.log(tracknames)
+        const embedField = {name: `Tracks`, value: tracknames}
+        
+        const embed = new MessageEmbed()
+          .setColor('#418e86')
+          .setTitle(`${userInputGame} Tracks`)
+          .setURL(url)
+          .addFields(embedField)
 
-      interaction.editReply({embeds: [embed]})
+        interaction.editReply({embeds: [embed]})
+      } else if(userInputGame === null && userInputTrack === null){ // Handle no game or track entered (list games)
+        
+        let gameNames = fetchedData.map(el=> el.name).join('\n')
+
+        const embedField = {name: `Games`, value: gameNames}
+
+        const embed = new MessageEmbed()
+          .setColor('#418e86')
+          .setTitle(`Available Games`)
+          .setURL(url)
+          .addFields(embedField)
+
+        interaction.editReply({embeds: [embed]})
+      } 
     }
   }
 }
