@@ -33,45 +33,56 @@ Most commands utilize the [Ergast F1 api](http://ergast.com/mrd/) to fetch data 
 
 ### How to install/use
 1. Create a discord bot application and receive a token following the instructions at the following website
-  - https://www.writebots.com/how-to-make-a-discord-bot/
+    - https://www.writebots.com/how-to-make-a-discord-bot/
 2. Make note of token, get guild id (server id) and client id of bot once it is in your channel
-  - Enable developer mode in discord advanced settings and right click to find these id's
-  - Bot id is also listed in the discord dev panel used to add bot to discord channel
+    - Enable developer mode in discord advanced settings and right click to find these id's
+    - Bot id is also listed in the discord dev panel used to add bot to discord channel
 3. Clone project locally
 4. Run `npm install` on project
-5. Create '.env' file and add 'key=value' pairs for 'CLIENT_ID', 'GUILD_ID', and 'TOKEN'
-  -   ```env
-      CLIENT_ID=botid
-      GUILD_ID=serverid
-      TOKEN=botToken.Here
-      ```
-6. Deploy commands to the bot by running `node deploy-commands.js`
-7. Run application with `node .` or `node index.js` while in project folder
+5. Create '.env' file
+    - add 'key=value' pairs for 'CLIENT_ID', 'GUILD_ID', and 'TOKEN'
+    - include api links for the time trials commands as those will need a database/server
+      - If you need a server to run a timetrials data base see my `time-trials-server` project on [github](https://github.com/jnhthomp/time-trial-api-server)
+    -   ```env
+        # .env-example
+        
+        # Discord Bot Connection info
+        CLIENT_ID=botid
+        GUILD_ID=serverid
+        TOKEN=botToken.Here
+
+        # Backend/API Server urls
+        BASE_URL=https://link-to-your-server.herokuapp.com/
+        API_URL=https://link-to-your-server.herokuapp.com/api/
+        ```
+6. Deploy commands to the bot by running `npm run depcom` or `node deploy-commands.js`
+    - This command only has to be done once with new commands. After creating the command on the dev environment and pushing it with this command, you DO NOT need to run this command when the project is deployed on heroku
+7. Run application with `npm run start` or `node index.js` while in project folder
 
 ### Create new commands
 1. Create a file matching what you want the name of the command to be
-  - ex: `ping.js`
+    - ex: `ping.js`
 2. Use this skeleton and fill the appropriate information ()
-  -   ```js
-      const { SlashCommandBuilder } = require('@discordjs/builders');
-      
-      const commandName = '';
-      const commandDescription = '';
+    -   ```js
+        const { SlashCommandBuilder } = require('@discordjs/builders');
+        
+        const commandName = '';
+        const commandDescription = '';
 
-      module.exports = {
-        data: new SlashCommandBuilder()
-          .setName(`${commandName}`)
-          .setDescription(`${commandDescription}`),
+        module.exports = {
+          data: new SlashCommandBuilder()
+            .setName(`${commandName}`)
+            .setDescription(`${commandDescription}`),
 
-        async execute(interaction) {
-          // Add logic to execute here
-          // await interaction.reply('Pong!');
-        },
-      };
-      ```
+          async execute(interaction) {
+            // Add logic to execute here
+            // await interaction.reply('Pong!');
+          },
+        };
+        ```
 
 If you need any npm packages such as fetch import them using require within these files
-When `node deploy-commands.js` is run commands will be retrieved and stored in an array and submitted to the application
+When `node deploy-commands.js` is run commands will be retrieved and stored in an array and submitted to the discord application itself and be registered and save within the server you have added.
 When bot is running `index.js` will perform a similar but different action to store the commands and execute the command in each file as needed
 
 ### Trouble Shooting + Tips
@@ -91,6 +102,10 @@ I can make even nicer returns by considering using the following technique for b
 - https://dev.to/en3sis/advanced-discord-js-custom-embeds-using-attachments-2bpn
   - Create html/css markup for webpage, use node-html-to-image to make it a jpeg image
   - Attach the generated jpeg to embed object
+
+- Learn how to auto assign static driver initials to users with a command (so the bot doesn't forget and can be access via other commands)
+  - Then use these initials automatically whenever `/ttadd` is used
+  - This will allow the `initials` option to be optional and if not included it would default to the users Initials
 
 ## Lessons Learned
 - Creating Node applications
