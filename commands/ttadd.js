@@ -25,9 +25,10 @@ module.exports = {
     await interaction.deferReply();
 
     // url to use for POST request
-    const userInputGame = interaction.options.getString('game') || 'f1_21' // set to option value when added
-    const userInputTrack = interaction.options.getString('track') || 'bahrain' // set to option value when added
-    const url = `https://jtdev-time-trial-api.herokuapp.com/api/${userInputGame}/${userInputTrack}`  
+    const userInputGame = interaction.options.getString('game') || null // set to option value when added (null should never trigger as long as set.Required(true))
+    const userInputTrack = interaction.options.getString('track') || null // set to option value when added (null should never trigger as long as set.Required(true))
+    const fetchPath = `${userInputGame}/${userInputTrack}`
+    const url = `${process.env.API_URL}${fetchPath}`  
   
     // JSON object to submit in post body
     const leaderboardData = {
@@ -83,7 +84,7 @@ module.exports = {
       const embed = new MessageEmbed()
         .setColor('#418e86')
         .setTitle(`${fetchLeaderboard.game} ${fetchLeaderboard.track}`)
-        .setURL(url)
+        .setURL(`${process.env.BASE_URL}${fetchPath}`)
         .addFields(embedField)
 
       interaction.editReply({ embeds: [embed] })

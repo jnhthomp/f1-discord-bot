@@ -41,7 +41,7 @@ module.exports = {
       fetchPath += `${userInputTrack}`
     }
     
-    const url = `https://jtdev-time-trial-api.herokuapp.com/api/${fetchPath}`
+    const url = `${process.env.API_URL}${fetchPath}`
     // If making fetch requests use this pattern
     const fetchedData = await fetch(url)
       .then(response => response.json())
@@ -84,7 +84,7 @@ module.exports = {
         const embed = new MessageEmbed()
           .setColor('#418e86')
           .setTitle(`${fetchedData.game} ${fetchedData.track}`)
-          .setURL(url)
+          .setURL(`${process.env.BASE_URL}${fetchPath}`)
           .addFields(embedField)
 
         interaction.editReply({embeds: [embed]})
@@ -96,7 +96,7 @@ module.exports = {
         const embed = new MessageEmbed()
           .setColor('#418e86')
           .setTitle(`${userInputGame} Tracks`)
-          .setURL(url)
+          .setURL(`${process.env.BASE_URL}${fetchPath}`)
           .addFields(embedField)
 
         interaction.editReply({embeds: [embed]})
@@ -109,7 +109,7 @@ module.exports = {
         const embed = new MessageEmbed()
           .setColor('#418e86')
           .setTitle(`Available Games`)
-          .setURL(url)
+          .setURL(`${process.env.BASE_URL}${fetchPath}`)
           .addFields(embedField)
 
         interaction.editReply({embeds: [embed]})
