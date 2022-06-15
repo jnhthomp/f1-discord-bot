@@ -66,13 +66,19 @@ module.exports = {
         console.log('Data fetched successfully')
         // set podium field for embed
         // Creates medal + info for top 3 drivers      
+        let firstInstanceArray = [];
         const embedFieldsPodium = fetchedData.leaderboard.map((data, idx) => { 
           let medal = null
           if(idx === 0){ medal = '🥇' }
           if(idx === 1){ medal = '🥈' }
           if(idx === 2){ medal = '🥉' }
 
-          return {...data, medal}
+          let driverInitial = data.driverInitial
+          if(!firstInstanceArray.includes(data.driverInitial)){
+            firstInstanceArray.push(data.driverInitial)
+            driverInitial = `**${data.driverInitial}**`
+          }
+          return {...data, medal, driverInitial}
         }).filter((el, i) => el.time !== 'NaN' && i <= 9) // Ensure times are valid and only display top 10 times 
 
         console.log(embedFieldsPodium)
