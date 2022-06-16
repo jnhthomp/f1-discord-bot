@@ -107,6 +107,8 @@ I can make even nicer returns by considering using the following technique for b
   - Then use these initials automatically whenever `/ttadd` is used
   - This will allow the `initials` option to be optional and if not included it would default to the users Initials
 
+- Create and utilize economy by creating commands that allow specific users to 'give/gift' coins. Later add betting/trading and award coins based on performance in leaderboard charts.
+
 ## Lessons Learned
 - Creating Node applications
 - Using discord.js
@@ -129,3 +131,71 @@ Take a look at other examples from my <a href="https://jtdev.netlify.app/">portf
 **Stock Based Social Network:** https://github.com/jnhthomp/finance-tracker
 
 **Restaurant Web-Based Ordering System:** https://github.com/jnhthomp/practice-food-order-app
+
+
+___
+# Notes on Next TODO:
+Reference: https://www.youtube.com/watch?v=w0LxGWajE-4
+# Add Dependencies
+1. Download mongo currency https://www.npmjs.com/package/discord-mongo-currency
+  ```bash
+  $npm install discord-mongo-currency
+  ```
+2. Require in `index.js` and use to connect
+  ```js
+  const mongoCurrency = require('discord-mongo-currency');
+
+  // ... some code
+
+  // Connect
+  mongoCurrency.connect('mongodb.connection.string.from.env')
+  ```
+
+
+# Add Commands/Example commands
+## give 
+Give coin/currency to other users
+Ex `/give coin:50 @user`
+
+1. Initialize commands with template (will need a non-optional argument called `coin`)
+  - See https://www.npmjs.com/package/slash-command-builder and ctrl+f Option: Integer
+    - If it doesn't work this way just accept it as a string and convert it to a number
+      - If taking this approach be sure to convert to a number and return an error if not (see 10:16 in source vid)
+  ```js
+  {
+    data: new SlashCommandBuilder()
+      .setName('give')
+      .setDescription('Give coins to another user')
+      // Accept options (arguments) after slash command
+      // For different typing available if expecting a certain value type (string, int, bool, etc... See: https://discordjs.guide/interactions/slash-commands.html#option-types)
+      .addIntegerOption(option => option.setName('coin').setDescription('Amount of coins to give').setRequired(true))
+      .addMentionableOption(option => option.setName('user').setDescription('User to give coins to').setRequired(true)),
+  }
+  ```
+2. Find the user to give the coin to
+  (see interaction object: https://discord.com/developers/docs/interactions/receiving-and-responding)
+  ```js
+  // First person mentioned in the message (hopefully, see discord docs above)
+  // (This will only work if the user is not passed in as an option like above (probably))
+  const member = interaction.messages.mentions[0] 
+
+  // if user is passed as an option try this:
+  const member2 = interaction.options.getMentionable('user')
+
+  
+  // Example code from vid if that doesn't work
+  // const member = message.mentions.members.first()
+  ```
+3. Retrieve number of coins from user options
+  ```js
+  const userInputCoins = interaction.options.getInteger('coin')
+  ```
+2. Give coins to that user by user id (see giveCoins in mongo currency npm page)
+  ```js
+  // giveCoins(userId, guildId, amount) 
+  await mongoCurrency.giveCoins(member.id, message.author.guild, userInputCoins)
+  ```
+3. Confirmation message after coins were given
+  ```js
+  interaction.editReply(`${member} received ${userInputCoins} coins`)
+  ```
